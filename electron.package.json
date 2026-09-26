@@ -1,0 +1,49 @@
+{
+  "name": "school-mis-pro-electron",
+  "version": "1.0.0",
+  "description": "School MIS Pro Desktop Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.7"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "ke.school.mispro",
+    "productName": "School MIS Pro",
+    "directories": {
+      "output": "../dist-electron"
+    },
+    "files": [
+      "**/*",
+      "../www/**/*",
+      "../node_modules/**/*"
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "../www/icons/icon-512.png"
+    },
+    "linux": {
+      "target": ["deb", "AppImage"],
+      "category": "Education",
+      "icon": "../www/icons/icon-512.png"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "../www/icons/icon-512.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "School MIS Pro"
+    }
+  }
+}

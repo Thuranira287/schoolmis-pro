@@ -1,0 +1,17 @@
+{
+  "appId": "ke.school.mispro",
+  "appName": "School MIS Pro",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#0f3460",
+    "minSdkVersion": 23,
+    "icons": {
+      "icon": "www/icons/ic_launcher.png",
+      "iconRound": "www/icons/ic_launcher_round.png"
+    }
+  }
+}
