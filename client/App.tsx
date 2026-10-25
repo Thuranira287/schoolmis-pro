@@ -1,5 +1,3 @@
-// App.tsx - Update the initialization logic
-
 import "./global.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -9,7 +7,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { dbAdapter } from "@/lib/db/adapter";
 import { auth } from "@/lib/auth";
-import { dbOps } from "@/lib/db";
 
 // Pages
 import Login from "./pages/Login";
@@ -27,7 +24,8 @@ import Subjects from "./pages/Subjects";
 import Settings from "./pages/Settings";
 import Attendance from "./pages/Attendance";
 import Payments from "./pages/Payments";
-import Schools from "./pages/Schools"
+import Schools from "./pages/Schools";
+import SbaResults from "./pages/SbaResults";
 import NotFound from "./pages/NotFound";
 
 // Components
@@ -45,25 +43,20 @@ function AppContent() {
   useEffect(() => {
     initializeApp();
     if ((window as any).electronAPI) {
-    console.log('✅ Electron API available');}
+      console.log("✅ Electron API available");
+    }
   }, []);
 
   const initializeApp = async () => {
     try {
-      // Initialize database adapter
       await dbAdapter.initialize();
-
-      // Initialize auth
       await auth.initialize();
 
-      // Check if any schools exist
       const schools = await dbAdapter.getAll("schools");
       setHasSchools(schools.length > 0);
 
-      // Check if user is authenticated
       const user = auth.getCurrentUser();
       setIsAuthenticated(!!user);
-
       setInitialized(true);
     } catch (error) {
       console.error("Failed to initialize app:", error);
@@ -90,7 +83,6 @@ function AppContent() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Setup Route - Only if no schools exist */}
         {!hasSchools ? (
           <>
             <Route path="/setup" element={<Setup />} />
@@ -98,10 +90,8 @@ function AppContent() {
           </>
         ) : (
           <>
-            {/* Login Route */}
             <Route path="/login" element={<Login />} />
 
-            {/* Protected Routes */}
             <Route
               path="/"
               element={
@@ -127,7 +117,7 @@ function AppContent() {
             <Route
               path="/schools"
               element={
-                <ProtectedRoute requiredRoles={['admin']}>
+                <ProtectedRoute requiredRoles={["admin"]}>
                   <AppShell>
                     <Schools />
                   </AppShell>
@@ -138,7 +128,7 @@ function AppContent() {
             <Route
               path="/students"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal', 'teacher']}>
+                <ProtectedRoute requiredRoles={["admin", "principal", "teacher"]}>
                   <AppShell>
                     <Students />
                   </AppShell>
@@ -149,7 +139,7 @@ function AppContent() {
             <Route
               path="/classes"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal', 'teacher']}>
+                <ProtectedRoute requiredRoles={["admin", "principal", "teacher"]}>
                   <AppShell>
                     <Classes />
                   </AppShell>
@@ -160,7 +150,7 @@ function AppContent() {
             <Route
               path="/teachers"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal']}>
+                <ProtectedRoute requiredRoles={["admin", "principal"]}>
                   <AppShell>
                     <Teachers />
                   </AppShell>
@@ -171,7 +161,7 @@ function AppContent() {
             <Route
               path="/subjects"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal', 'teacher']}>
+                <ProtectedRoute requiredRoles={["admin", "principal", "teacher"]}>
                   <AppShell>
                     <Subjects />
                   </AppShell>
@@ -182,7 +172,7 @@ function AppContent() {
             <Route
               path="/marks"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal', 'teacher', 'student']}>
+                <ProtectedRoute requiredRoles={["admin", "principal", "teacher", "student"]}>
                   <AppShell>
                     <Marks />
                   </AppShell>
@@ -193,7 +183,7 @@ function AppContent() {
             <Route
               path="/attendance"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal', 'teacher']}>
+                <ProtectedRoute requiredRoles={["admin", "principal", "teacher"]}>
                   <AppShell>
                     <Attendance />
                   </AppShell>
@@ -204,7 +194,7 @@ function AppContent() {
             <Route
               path="/payments"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal', 'accountant']}>
+                <ProtectedRoute requiredRoles={["admin", "principal", "accountant"]}>
                   <AppShell>
                     <Payments />
                   </AppShell>
@@ -215,7 +205,7 @@ function AppContent() {
             <Route
               path="/reports"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal', 'teacher', 'accountant', 'student']}>
+                <ProtectedRoute requiredRoles={["admin", "principal", "teacher", "accountant", "student"]}>
                   <AppShell>
                     <Reports />
                   </AppShell>
@@ -226,7 +216,7 @@ function AppContent() {
             <Route
               path="/analytics"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal', 'teacher']}>
+                <ProtectedRoute requiredRoles={["admin", "principal", "teacher"]}>
                   <AppShell>
                     <Analytics />
                   </AppShell>
@@ -235,20 +225,31 @@ function AppContent() {
             />
 
             <Route
+              path="/sba-results"
+              element={
+                <ProtectedRoute requiredRoles={["admin", "principal", "teacher"]}>
+                  <AppShell>
+                    <SbaResults />
+                  </AppShell>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/users"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal']}>
+                <ProtectedRoute requiredRoles={["admin", "principal"]}>
                   <AppShell>
                     <Users />
                   </AppShell>
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/audit-logs"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal']}>
+                <ProtectedRoute requiredRoles={["admin", "principal"]}>
                   <AppShell>
                     <AuditLogs />
                   </AppShell>
@@ -259,7 +260,7 @@ function AppContent() {
             <Route
               path="/settings"
               element={
-                <ProtectedRoute requiredRoles={['admin', 'principal']}>
+                <ProtectedRoute requiredRoles={["admin", "principal"]}>
                   <AppShell>
                     <Settings />
                   </AppShell>
@@ -267,13 +268,8 @@ function AppContent() {
               }
             />
 
-            <Route 
-            path="/NotFound"
-            element= {
-              <NotFound />
-            }
-            />
-            {/* Catch all - redirect to login if not authenticated, else dashboard */}
+            <Route path="/NotFound" element={<NotFound />} />
+
             <Route
               path="*"
               element={
